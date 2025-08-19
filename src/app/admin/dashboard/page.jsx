@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { getDashboardEarnings } from "./actions";
-import { getPaymentEarnings } from "./actions"; // import the new function
+import { getDashboardEarnings, getPaymentEarnings } from "./actions";
 import LoadingState from "@/components/LodingState";
 
 const Dashboard = () => {
@@ -24,8 +23,6 @@ const Dashboard = () => {
     async function fetchEarnings() {
       try {
         setLoading(true);
-
-        // Fetch both earnings
         const [dashboardData, paymentData] = await Promise.all([
           getDashboardEarnings(),
           getPaymentEarnings(),
@@ -51,64 +48,61 @@ const Dashboard = () => {
     );
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 px-4">
-      <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-8">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 px-4 py-8">
+      <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 mb-6 text-center">
         Dashboard Earnings
       </h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full max-w-5xl mb-8">
-        {/* Total Earnings */}
-        <div className="bg-white shadow-lg rounded-xl p-6 text-center flex flex-col items-center">
-          <h2 className="text-lg font-semibold text-gray-700 mb-2">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 w-full max-w-5xl mb-8">
+        {/** Orders Cards */}
+        <div className="bg-white shadow-lg rounded-xl p-6 flex flex-col items-center w-full">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-700 mb-2 text-center">
             Total Earnings (Orders)
           </h2>
-          <p className="text-2xl font-bold text-gray-900">
+          <p className="text-2xl sm:text-3xl font-bold text-gray-900">
             ₹{dashboardEarnings.totalEarnings.toFixed(4)}
           </p>
         </div>
 
-        {/* Total API Charges */}
-        <div className="bg-white shadow-lg rounded-xl p-6 text-center flex flex-col items-center">
-          <h2 className="text-lg font-semibold text-gray-700 mb-2">
+        <div className="bg-white shadow-lg rounded-xl p-6 flex flex-col items-center w-full">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-700 mb-2 text-center">
             Total API Charges
           </h2>
-          <p className="text-2xl font-bold text-gray-900">
+          <p className="text-2xl sm:text-3xl font-bold text-gray-900">
             ₹{dashboardEarnings.totalApiCharges.toFixed(4)}
           </p>
         </div>
 
-        {/* Actual Earnings */}
-        <div className="bg-white shadow-lg rounded-xl p-6 text-center flex flex-col items-center">
-          <h2 className="text-lg font-semibold text-gray-700 mb-2">
+        <div className="bg-white shadow-lg rounded-xl p-6 flex flex-col items-center w-full">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-700 mb-2 text-center">
             Actual Earnings (Orders)
           </h2>
-          <p className="text-2xl font-bold text-green-600">
+          <p className="text-2xl sm:text-3xl font-bold text-green-600">
             ₹{dashboardEarnings.actualEarnings.toFixed(4)}
           </p>
         </div>
       </div>
 
-      <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-8">
+      <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 mb-6 text-center">
         Payment Earnings (Razorpay)
       </h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-5xl">
-        {/* Total Collected */}
-        <div className="bg-white shadow-lg rounded-xl p-6 text-center flex flex-col items-center">
-          <h2 className="text-lg font-semibold text-gray-700 mb-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 w-full max-w-5xl">
+        {/** Payment Cards */}
+        <div className="bg-white shadow-lg rounded-xl p-6 flex flex-col items-center w-full">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-700 mb-2 text-center">
             Total Collected
           </h2>
-          <p className="text-2xl font-bold text-gray-900">
+          <p className="text-2xl sm:text-3xl font-bold text-gray-900">
             ₹{paymentEarnings.totalCollected.toFixed(4)}
           </p>
         </div>
 
-        {/* Actual Earnings after Fees */}
-        <div className="bg-white shadow-lg rounded-xl p-6 text-center flex flex-col items-center">
-          <h2 className="text-lg font-semibold text-gray-700 mb-2">
+        <div className="bg-white shadow-lg rounded-xl p-6 flex flex-col items-center w-full">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-700 mb-2 text-center">
             Actual Earnings (After 2% Fee)
           </h2>
-          <p className="text-2xl font-bold text-green-600">
+          <p className="text-2xl sm:text-3xl font-bold text-green-600">
             ₹{paymentEarnings.actualEarnings.toFixed(4)}
           </p>
         </div>
