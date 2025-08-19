@@ -39,7 +39,7 @@ const PlatformSchema = new mongoose.Schema({
   categories: {
     type: Map,
     of: [ServiceSchema],
-    required: true
+    default: new Map(),   // ✅ optional, defaults to empty
   }
 });
 
