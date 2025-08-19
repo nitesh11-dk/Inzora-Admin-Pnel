@@ -144,64 +144,102 @@ export default function OrdersHistory({
       </div>
 
       {/* Mobile Cards */}
-      <div className="md:hidden space-y-4">
-        {orders.map((order) => {
-          const isCompleted = order.status?.toLowerCase() === "completed";
-          return (
-            <div key={order._id} className="bg-white rounded-lg shadow-sm p-4 text-gray-800 ring-1 ring-gray-200 text-sm">
-              <p className="mb-1">
-                <span className="font-semibold">Order ID (API):</span>
-                <div className="flex items-center gap-2">
-                  <span
-                    className="cursor-pointer hover:text-blue-600"
-                    onClick={() => handleCopyToClipboard(order.actualOrderIdFromApi, "orderId", order._id)}
-                  >
-                    {order.actualOrderIdFromApi || "-"}
-                  </span>
-                  {copiedItem === `orderId-${order._id}` && <FiCheck className="text-green-500 text-sm" />}
-                </div>
-              </p>
-              <p className="mb-1"><span className="font-semibold">Category:</span> {order.category || "-"}</p>
-              <p className="mb-1"><span className="font-semibold">Platform:</span> {order.platform || "-"}</p>
-              <p className="mb-1"><span className="font-semibold">Platform Service:</span> {order.platformService || "-"}</p>
-              <p className="mb-1"><span className="font-semibold">Service:</span> {order.service || "-"}</p>
-              <p className="mb-1">
-                <span className="font-semibold">Link:</span>
-                <div className="flex items-center gap-2">
-                  {order.link ? (
-                    <a
-                      href={order.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-800 underline break-all"
-                      onClick={() => handleCopyToClipboard(order.link, "link", order._id)}
-                    >
-                      {order.link}
-                    </a>
-                  ) : (
-                    "-"
-                  )}
-                  {copiedItem === `link-${order._id}` && <FiCheck className="text-green-500 text-sm" />}
-                </div>
-              </p>
-              <p className="mb-1"><span className="font-semibold">Price:</span> ₹{order.price}</p>
-              <p className="mb-1"><span className="font-semibold">Quantity:</span> {order.quantity}</p>
-              <p className="mb-1"><span className="font-semibold">Start Count:</span> {order.startCount || "-"}</p>
-              <p className="mb-1"><span className="font-semibold">Status:</span> <span className="capitalize">{order.status}</span></p>
-              <p className="mb-1"><span className="font-semibold">Remains:</span> {order.remains || "-"}</p>
-              <p className="mb-2"><span className="font-semibold">Created At:</span> {order.createdAt ? new Date(order.createdAt).toLocaleString() : "-"}</p>
-              <button
-                onClick={() => handleRefreshClick(order)}
-                className={`text-indigo-600 hover:text-indigo-800 ${isCompleted ? "opacity-50 cursor-not-allowed" : ""}`}
-                title={isCompleted ? "Completed" : "Refresh Order Status"}
-                disabled={isCompleted}
+      {/* Mobile Cards */}
+<div className="md:hidden space-y-4">
+  {orders.map((order) => {
+    const isCompleted = order.status?.toLowerCase() === "completed";
+    return (
+      <div
+        key={order._id}
+        className="bg-white rounded-lg shadow-sm p-4 text-gray-800 ring-1 ring-gray-200 text-sm"
+      >
+        <p className="mb-1">
+          <span className="font-semibold">Order ID (API):</span>
+          <div className="flex items-center gap-2">
+            <span
+              className="cursor-pointer hover:text-blue-600"
+              onClick={() =>
+                handleCopyToClipboard(order.actualOrderIdFromApi, "orderId", order._id)
+              }
+            >
+              {order.actualOrderIdFromApi || "-"}
+            </span>
+            {copiedItem === `orderId-${order._id}` && (
+              <FiCheck className="text-green-500 text-sm" />
+            )}
+          </div>
+        </p>
+        <p className="mb-1">
+          <span className="font-semibold">Platform Service:</span>{" "}
+          {order.platformService || "-"}
+        </p>
+        <p className="mb-1">
+          <span className="font-semibold">Link:</span>
+          <div className="flex items-center gap-2">
+            {order.link ? (
+              <a
+                href={order.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:text-blue-800 underline break-all"
+                onClick={() => handleCopyToClipboard(order.link, "link", order._id)}
               >
-                <FiRefreshCw size={18} className={refreshingOrderId === order._id ? "animate-spin" : ""} />
-              </button>
-            </div>
-          );
-        })}
+                {order.link}
+              </a>
+            ) : (
+              "-"
+            )}
+            {copiedItem === `link-${order._id}` && (
+              <FiCheck className="text-green-500 text-sm" />
+            )}
+          </div>
+        </p>
+        <p className="mb-1">
+          <span className="font-semibold">Price:</span> ₹{order.price}
+        </p>
+        <p className="mb-1">
+          <span className="font-semibold">Quantity:</span> {order.quantity}
+        </p>
+        <p className="mb-1">
+          <span className="font-semibold">Status:</span>{" "}
+          <span
+            className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full capitalize ${
+              order.status === "success"
+                ? "bg-green-100 text-green-800"
+                : order.status === "pending"
+                ? "bg-yellow-100 text-yellow-800"
+                : "bg-red-100 text-red-800"
+            }`}
+          >
+            {order.status || "-"}
+          </span>
+        </p>
+        <p className="mb-1">
+          <span className="font-semibold">Remains:</span> {order.remains || "-"}
+        </p>
+        <p className="mb-2">
+          <span className="font-semibold">Created At:</span>{" "}
+          {order.createdAt ? new Date(order.createdAt).toLocaleString() : "-"}
+        </p>
+
+        {/* Mobile Refresh Button */}
+        <button
+          onClick={() => handleRefreshClick(order)}
+          className={`mt-2 w-full flex justify-center items-center py-2 rounded-md border text-sm font-medium 
+            ${isCompleted ? "bg-gray-200 text-gray-500 cursor-not-allowed" : "bg-indigo-600 text-white hover:bg-indigo-700"}`}
+          disabled={isCompleted}
+        >
+          <FiRefreshCw
+            size={18}
+            className={`mr-2 ${refreshingOrderId === order._id ? "animate-spin" : ""}`}
+          />
+          {isCompleted ? "Completed" : "Refresh Order"}
+        </button>
       </div>
+    );
+  })}
+</div>
+
     </div>
   );
 }

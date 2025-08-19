@@ -9,7 +9,7 @@ export default function OrdersHistoryContainer({ userId }) {
   const fetchAllOrders = async () => {
     if (!userId) return;
     try {
-      setIsLoading(true); 
+      setIsLoading(true);
       const res = await fetch(`/api/orders?userId=${userId}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
@@ -43,7 +43,7 @@ export default function OrdersHistoryContainer({ userId }) {
   };
 
   return (
-    <div className="p-6 bg-gray-50 w-full">
+    <div className="p-4 sm:p-6 bg-gray-50 w-full min-h-screen">
       <OrdersHistory
         title="Orders History"
         orders={orders}

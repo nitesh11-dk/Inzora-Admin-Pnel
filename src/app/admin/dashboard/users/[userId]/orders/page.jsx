@@ -7,14 +7,17 @@ export default function OrdersPage() {
 
   if (!userId) {
     return (
-      <div className="p-6">
-        <p className="text-gray-500">Invalid user.</p>
+      <div className="flex items-center justify-center h-64 p-6">
+        <p className="text-gray-500 text-center">⚠️ Invalid user.</p>
       </div>
     );
   }
 
   return (
-    <div className="p-6 bg-gray-50 w-full">
+    <div className="p-4 sm:p-6 bg-gray-50 min-h-screen w-full">
+      <h2 className="text-xl sm:text-2xl font-bold mb-4 text-gray-800">
+        Orders History
+      </h2>
       <OrdersHistoryContainer userId={userId} />
     </div>
   );

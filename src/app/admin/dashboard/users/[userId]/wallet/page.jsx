@@ -37,7 +37,6 @@ export default function WalletPage() {
         return;
       }
 
-      // ✅ Send only the amount to add
       const result = await updateWalletBalance(userId, addAmount);
 
       if (result.success) {
@@ -69,26 +68,32 @@ export default function WalletPage() {
   }
 
   return (
-    <div className="p-6 bg-gray-50 w-full">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">User Wallet</h2>
+    <div className="p-4 sm:p-6 bg-gray-50 w-full">
+      <h2 className="text-xl sm:text-2xl font-bold mb-4 text-gray-800">
+        User Wallet
+      </h2>
 
-      <div className="bg-white p-6 rounded-lg shadow-md space-y-4">
-        <p>
-          <span className="font-semibold">User ID:</span> {wallet.userId}
-        </p>
-        <p>
-          <span className="font-semibold">Current Balance:</span> ₹{wallet.balance.toFixed(2)}
-        </p>
-        <p>
-          <span className="font-semibold">Last Updated:</span>{" "}
-          {new Date(wallet.lastUpdated).toLocaleString()}
-        </p>
+      <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md space-y-4">
+        <div className="space-y-2 text-sm sm:text-base">
+          <p>
+            <span className="font-semibold">User ID:</span>{" "}
+            <span className="break-all">{wallet.userId}</span>
+          </p>
+          <p>
+            <span className="font-semibold">Current Balance:</span> ₹
+            {wallet.balance.toFixed(2)}
+          </p>
+          <p>
+            <span className="font-semibold">Last Updated:</span>{" "}
+            {new Date(wallet.lastUpdated).toLocaleString()}
+          </p>
+        </div>
 
         {/* Add Funds Section */}
         {!showForm ? (
           <button
             onClick={() => setShowForm(true)}
-            className="mt-4 px-5 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
+            className="w-full sm:w-auto mt-4 px-5 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
           >
             + Add Funds
           </button>
@@ -105,10 +110,10 @@ export default function WalletPage() {
               placeholder="Enter amount"
               className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
             />
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={handleAddFunds}
-                className="px-5 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition"
+                className="w-full sm:w-auto px-5 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition"
               >
                 Submit
               </button>
@@ -117,7 +122,7 @@ export default function WalletPage() {
                   setShowForm(false);
                   setAmount("");
                 }}
-                className="px-5 py-2 bg-gray-200 text-gray-700 rounded-lg shadow hover:bg-gray-300 transition"
+                className="w-full sm:w-auto px-5 py-2 bg-gray-200 text-gray-700 rounded-lg shadow hover:bg-gray-300 transition"
               >
                 Cancel
               </button>

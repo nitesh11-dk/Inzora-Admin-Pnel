@@ -5,7 +5,7 @@ import { FaWallet, FaBars, FaWhatsapp, FaInstagram, FaPlus } from "react-icons/f
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FiSettings, FiPackage, FiDollarSign, FiFileText, FiUser } from "react-icons/fi";
-
+ import { FiTool } from "react-icons/fi"; // ✅ add this import
 
 export default function Navbar({ isLoggedIn, wallet,children }) {
   const router = useRouter();
@@ -82,7 +82,12 @@ export default function Navbar({ isLoggedIn, wallet,children }) {
               <h2 className="text-lg font-bold mb-4">Menu</h2>
               <ul className="space-y-1">
                 {[
-                  { href: "/admin/dashboard/users", icon: <FiSettings className="text-xl" />, label: "Users" }
+                  { href: "/admin/dashboard/users", icon: <FiSettings className="text-xl" />, label: "Users" },
+{ 
+  href: "/admin/dashboard/service", 
+  icon: <FiTool className="text-xl" />, // ✅ changed to service-like icon
+  label: "Services" // also renamed label for clarity
+}
                 ].map(({ href, icon, label }) => (
                   <li key={href}>
                     <Link

@@ -1,6 +1,6 @@
 "use client";
 
-import { FiDollarSign } from 'react-icons/fi';
+import { FiDollarSign } from "react-icons/fi";
 
 const TopupHistory = ({ orders = [], loading = false, title = "Topup History" }) => {
   if (loading) {
@@ -24,7 +24,7 @@ const TopupHistory = ({ orders = [], loading = false, title = "Topup History" })
 
   return (
     <div className="w-full">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">{title}</h2>
+      <h2 className="text-xl sm:text-2xl font-bold mb-4 text-gray-800">{title}</h2>
 
       {/* Desktop Table */}
       <div className="hidden md:block overflow-x-auto">
@@ -33,31 +33,33 @@ const TopupHistory = ({ orders = [], loading = false, title = "Topup History" })
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">#</th>
-                  <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Created At</th>
-                  <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Status</th>
-                  <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Amount</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">#</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Created At</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Status</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Amount</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 bg-white">
                 {orders.map((order, index) => (
                   <tr key={order._id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">{index + 1}</td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
+                    <td className="px-4 py-3 text-sm text-gray-700">{index + 1}</td>
+                    <td className="px-4 py-3 text-sm text-gray-700">
                       {new Date(order.createdAt).toLocaleString()}
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm capitalize">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                        order.status === 'success' 
-                          ? 'bg-green-100 text-green-800'
-                          : order.status === 'pending'
-                          ? 'bg-yellow-100 text-yellow-800'
-                          : 'bg-red-100 text-red-800'
-                      }`}>
+                    <td className="px-4 py-3 text-sm capitalize">
+                      <span
+                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                          order.status === "success"
+                            ? "bg-green-100 text-green-800"
+                            : order.status === "pending"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
                         {order.status}
                       </span>
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-gray-900">₹{order.amount}</td>
+                    <td className="px-4 py-3 text-sm font-semibold text-gray-900">₹{order.amount}</td>
                   </tr>
                 ))}
               </tbody>
@@ -67,33 +69,32 @@ const TopupHistory = ({ orders = [], loading = false, title = "Topup History" })
       </div>
 
       {/* Mobile Cards */}
-      <div className="md:hidden space-y-4">
+      <div className="md:hidden space-y-3">
         {orders.map((order, index) => (
           <div
             key={order._id}
-            className="bg-white rounded-lg shadow-sm p-4 text-gray-800 ring-1 ring-gray-200"
+            className="bg-white rounded-lg shadow p-4 text-gray-800 ring-1 ring-gray-200"
           >
-            <p className="mb-1">
-              <span className="font-semibold">#:</span> {index + 1}
-            </p>
-            <p className="mb-1">
-              <span className="font-semibold">Created At:</span>{" "}
-              {new Date(order.createdAt).toLocaleString()}
-            </p>
-            <p className="mb-1">
-              <span className="font-semibold">Status:</span>{" "}
-              <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                order.status === 'success' 
-                  ? 'bg-green-100 text-green-800'
-                  : order.status === 'pending'
-                  ? 'bg-yellow-100 text-yellow-800'
-                  : 'bg-red-100 text-red-800'
-              }`}>
+            <div className="flex justify-between mb-2">
+              <span className="font-semibold text-gray-600">#{index + 1}</span>
+              <span
+                className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                  order.status === "success"
+                    ? "bg-green-100 text-green-800"
+                    : order.status === "pending"
+                    ? "bg-yellow-100 text-yellow-800"
+                    : "bg-red-100 text-red-800"
+                }`}
+              >
                 {order.status}
               </span>
+            </div>
+            <p className="text-sm mb-1">
+              <span className="font-medium">Created:</span>{" "}
+              {new Date(order.createdAt).toLocaleString()}
             </p>
-            <p>
-              <span className="font-semibold">Amount:</span> ₹{order.amount}
+            <p className="text-sm">
+              <span className="font-medium">Amount:</span> ₹{order.amount}
             </p>
           </div>
         ))}

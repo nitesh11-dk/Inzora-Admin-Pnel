@@ -29,8 +29,12 @@ export default function TopupHistoryPage() {
   }, [userId]);
 
   return (
-    <div className="p-6 bg-gray-50 w-full">
-      <TopupHistory title="Topup History" orders={topups} loading={loading} />
+    <div className="p-4 sm:p-6 bg-gray-50 w-full">
+      <TopupHistory 
+        title="Topup History" 
+        orders={topups} 
+        loading={loading} 
+      />
     </div>
   );
 }

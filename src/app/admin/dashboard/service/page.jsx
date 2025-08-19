@@ -29,12 +29,15 @@ const Services = () => {
         setLoading(false);
       }
     }
-
     fetchAllPlatforms();
   }, []);
 
   const handleCardClick = (platformName) => {
-    router.push(`/admin/dashboard/service/${encodeURIComponent(platformName.toLowerCase())}`);
+    router.push(
+      `/admin/dashboard/service/${encodeURIComponent(
+        platformName.toLowerCase()
+      )}`
+    );
   };
 
   const handleInputChange = (e) => {
@@ -91,26 +94,30 @@ const Services = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="max-w-7xl mx-auto px-4 py-6 sm:py-8">
       {/* Header */}
-      <div className="mb-8 text-center">
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-800 mb-2">
+      <div className="mb-6 sm:mb-8 text-center">
+        <h1 className="text-2xl sm:text-4xl font-extrabold text-gray-900 mb-2">
           Brezora Platforms
         </h1>
-        <p className="text-gray-600 text-lg">Manage all your platforms here.</p>
+        <p className="text-gray-600 text-base sm:text-lg">
+          Manage all your platforms here.
+        </p>
       </div>
 
       {/* Add Platform Form */}
-      <div className="mb-8 border border-gray-200 rounded-lg p-6 bg-white shadow-sm">
-        <h2 className="text-xl font-semibold mb-4">Add New Platform</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="mb-6 sm:mb-8 border border-gray-200 rounded-xl p-4 sm:p-6 bg-white shadow">
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">
+          Add New Platform
+        </h2>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
           <input
             type="text"
             name="name"
             value={form.name}
             onChange={handleInputChange}
             placeholder="Platform Name"
-            className="border p-2 rounded"
+            className="border p-2 rounded-lg w-full text-sm sm:text-base focus:ring-2 focus:ring-gray-400 focus:outline-none"
           />
           <input
             type="text"
@@ -118,7 +125,7 @@ const Services = () => {
             value={form.image}
             onChange={handleInputChange}
             placeholder="Image URL"
-            className="border p-2 rounded"
+            className="border p-2 rounded-lg w-full text-sm sm:text-base focus:ring-2 focus:ring-gray-400 focus:outline-none"
           />
           <input
             type="text"
@@ -126,38 +133,40 @@ const Services = () => {
             value={form.description}
             onChange={handleInputChange}
             placeholder="Description"
-            className="border p-2 rounded"
+            className="border p-2 rounded-lg w-full text-sm sm:text-base focus:ring-2 focus:ring-gray-400 focus:outline-none"
           />
         </div>
         <button
           onClick={handleAddPlatform}
-          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          className="mt-4 px-4 py-2 w-full sm:w-auto bg-gray-900 text-white rounded-lg hover:bg-gray-700 transition"
         >
           Add Platform
         </button>
       </div>
 
       {/* Platforms Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {platforms.length > 0 ? (
           platforms.map((platform) => (
             <div
               key={platform._id}
-              onClick={() => handleCardClick(platform.name)} // ✅ navigate when clicking card
-              className="cursor-pointer border border-gray-200 rounded-lg shadow-sm hover:shadow-lg transition duration-300 p-6 flex flex-col items-center text-center bg-white"
+              onClick={() => handleCardClick(platform.name)}
+              className="cursor-pointer border border-gray-200 rounded-xl shadow-sm hover:shadow-lg transition duration-300 p-4 sm:p-6 flex flex-col items-center text-center bg-white"
             >
               <img
                 src={platform.image}
                 alt={platform.name}
-                className="w-16 h-16 object-contain mb-4"
+                className="w-12 h-12 sm:w-16 sm:h-16 object-contain mb-4"
               />
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
                 {platform.name}
               </h3>
-              <p className="text-gray-600 text-sm mb-4">{platform.description}</p>
+              <p className="text-gray-600 text-sm sm:text-base mb-4">
+                {platform.description}
+              </p>
               <div
-                className="flex gap-2"
-                onClick={(e) => e.stopPropagation()} // ✅ prevent navigation when clicking buttons
+                className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto"
+                onClick={(e) => e.stopPropagation()}
               >
                 <button
                   onClick={() =>
@@ -166,13 +175,13 @@ const Services = () => {
                       name: platform.name + " (Updated)",
                     })
                   }
-                  className="px-3 py-1 text-sm bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                  className="w-full sm:w-auto px-3 py-1.5 text-sm bg-gray-800 text-white rounded-lg hover:bg-gray-700"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDeletePlatform(platform._id)}
-                  className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
+                  className="w-full sm:w-auto px-3 py-1.5 text-sm bg-gray-600 text-white rounded-lg hover:bg-gray-500"
                 >
                   Delete
                 </button>

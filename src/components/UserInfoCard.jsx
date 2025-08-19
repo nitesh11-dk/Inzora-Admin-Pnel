@@ -15,27 +15,44 @@ export default function UserInfoCard({ user }) {
   };
 
   return (
-    <div className="bg-gray-50 rounded-lg p-4">
-      <h3 className="text-lg font-semibold text-gray-900 mb-3">User Information</h3>
-      <div className="space-y-3">
-        <div className="flex items-center gap-3">
-          <FiUser className="text-gray-400" />
-          <span className="text-gray-600">Name:</span>
-          <span className="font-medium">{user.name}</span>
+    <div className="bg-gray-50 rounded-lg p-4 sm:p-6">
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        User Information
+      </h3>
+      <div className="space-y-4">
+        {/* Name */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-3">
+          <div className="flex items-center gap-2 text-gray-600">
+            <FiUser className="text-gray-400" />
+            <span>Name:</span>
+          </div>
+          <span className="font-medium break-all">{user.name}</span>
         </div>
-        <div className="flex items-center gap-3">
-          <FiMail className="text-gray-400" />
-          <span className="text-gray-600">Email:</span>
-          <span className="font-medium">{user.email}</span>
+
+        {/* Email */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-3">
+          <div className="flex items-center gap-2 text-gray-600">
+            <FiMail className="text-gray-400" />
+            <span>Email:</span>
+          </div>
+          <span className="font-medium break-all">{user.email}</span>
         </div>
-        <div className="flex items-center gap-3">
-          <FiCalendar className="text-gray-400" />
-          <span className="text-gray-600">Joined:</span>
+
+        {/* Joined Date */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-3">
+          <div className="flex items-center gap-2 text-gray-600">
+            <FiCalendar className="text-gray-400" />
+            <span>Joined:</span>
+          </div>
           <span className="font-medium">{formatDate(user.createdAt)}</span>
         </div>
-        <div className="flex items-center gap-3">
-          <FiShield className="text-gray-400" />
-          <span className="text-gray-600">Role:</span>
+
+        {/* Role */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-3">
+          <div className="flex items-center gap-2 text-gray-600">
+            <FiShield className="text-gray-400" />
+            <span>Role:</span>
+          </div>
           <span className="font-medium capitalize">{user.role}</span>
         </div>
       </div>

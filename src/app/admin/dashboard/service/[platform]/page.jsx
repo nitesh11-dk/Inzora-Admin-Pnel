@@ -13,7 +13,7 @@ import {
 } from "../../actions";
 import LoadingState from "@/components/LodingState";
 
-// Normalize backend response
+// ✅ Normalize backend response so _id is string and categories is object
 const normalizePlatform = (platform) => ({
   ...platform,
   _id: platform._id?.toString(),
@@ -26,10 +26,12 @@ const PlatformDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Category state
   const [newCategory, setNewCategory] = useState("");
   const [editingCategory, setEditingCategory] = useState(null);
   const [categoryNameEdit, setCategoryNameEdit] = useState("");
 
+  // Service state
   const [newService, setNewService] = useState({
     service: "",
     rate: "",
@@ -37,13 +39,12 @@ const PlatformDetail = () => {
     max: "",
     desc: "",
   });
-
   const [editingService, setEditingService] = useState(null); // {category, index}
   const [serviceEdit, setServiceEdit] = useState(null);
 
   const [selectedCategory, setSelectedCategory] = useState(null);
 
-  // Fetch once
+  // ✅ Fetch platform data
   useEffect(() => {
     async function fetchPlatform() {
       try {
@@ -63,7 +64,7 @@ const PlatformDetail = () => {
     fetchPlatform();
   }, [platformName]);
 
-  // -------- CATEGORY HANDLERS --------
+  // CATEGORY HANDLERS
   const handleAddCategory = async () => {
     if (!newCategory) return;
     const res = await addCategory(platform._id, newCategory);
@@ -100,11 +101,11 @@ const PlatformDetail = () => {
       });
       if (selectedCategory === oldCategory) setSelectedCategory(newName);
       setEditingCategory(null);
-      setCategoryNameEdit(""); // ✅ reset after update
+      setCategoryNameEdit("");
     }
   };
 
-  // -------- SERVICE HANDLERS --------
+  // SERVICE HANDLERS
   const handleAddService = async () => {
     if (!selectedCategory) return;
     const res = await addServiceToCategory(platform._id, selectedCategory, newService);
@@ -151,12 +152,15 @@ const PlatformDetail = () => {
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">{platform.name}</h1>
+      {/* Title */}
+      <h1 className="text-2xl md:text-3xl font-bold mb-6 text-gray-800 text-center md:text-left">
+        {platform.name}
+      </h1>
 
-      {/* Categories */}
+      {/* Categories Section */}
       <div className="mb-8">
-        <h2 className="text-xl font-semibold mb-4">Categories</h2>
-        <div className="flex gap-2 mb-4">
+        <h2 className="text-lg md:text-xl font-semibold mb-4">Categories</h2>
+        <div className="flex flex-col sm:flex-row gap-2 mb-4">
           <input
             type="text"
             placeholder="New Category"
@@ -172,7 +176,8 @@ const PlatformDetail = () => {
           </button>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        {/* Category List */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {Object.keys(platform.categories || {}).map((cat) => (
             <div
               key={cat}
@@ -181,34 +186,36 @@ const PlatformDetail = () => {
               }`}
               onClick={() => setSelectedCategory(cat)}
             >
-              <div className="flex justify-between items-center">
+              <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
                 {editingCategory === cat ? (
                   <>
                     <input
                       value={categoryNameEdit}
                       onChange={(e) => setCategoryNameEdit(e.target.value)}
-                      className="border p-1 rounded flex-1 mr-2"
+                      className="border p-1 rounded flex-1"
                     />
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();   // ✅ prevent unwanted submit
-                        e.stopPropagation();  // ✅ don’t trigger card click
-                        handleUpdateCategory(cat, categoryNameEdit);
-                      }}
-                      className="text-green-600 font-bold mr-2"
-                    >
-                      ✔
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setEditingCategory(null);
-                        setCategoryNameEdit("");
-                      }}
-                      className="text-gray-500"
-                    >
-                      ✖
-                    </button>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleUpdateCategory(cat, categoryNameEdit);
+                        }}
+                        className="text-green-600 font-bold"
+                      >
+                        ✔
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setEditingCategory(null);
+                          setCategoryNameEdit("");
+                        }}
+                        className="text-gray-500"
+                      >
+                        ✖
+                      </button>
+                    </div>
                   </>
                 ) : (
                   <>
@@ -220,7 +227,7 @@ const PlatformDetail = () => {
                           setEditingCategory(cat);
                           setCategoryNameEdit(cat);
                         }}
-                        className="text-yellow-600 hover:underline"
+                        className="text-yellow-600 hover:underline text-sm"
                       >
                         Edit
                       </button>
@@ -229,7 +236,7 @@ const PlatformDetail = () => {
                           e.stopPropagation();
                           handleDeleteCategory(cat);
                         }}
-                        className="text-red-500 hover:underline"
+                        className="text-red-500 hover:underline text-sm"
                       >
                         Delete
                       </button>
@@ -242,12 +249,14 @@ const PlatformDetail = () => {
         </div>
       </div>
 
-      {/* Services */}
+      {/* Services Section */}
       {selectedCategory && (
         <div>
-          <h2 className="text-xl font-semibold mb-4">Services in {selectedCategory}</h2>
+          <h2 className="text-lg md:text-xl font-semibold mb-4">
+            Services in {selectedCategory}
+          </h2>
 
-          {/* Add Service */}
+          {/* Add Service Form */}
           <div className="mb-6 grid grid-cols-1 md:grid-cols-6 gap-2">
             <input
               type="text"
@@ -282,53 +291,65 @@ const PlatformDetail = () => {
               placeholder="Description"
               value={newService.desc}
               onChange={(e) => setNewService({ ...newService, desc: e.target.value })}
-              className="border p-2 rounded col-span-1 md:col-span-2"
+              className="border p-2 rounded md:col-span-2"
             />
             <button
               onClick={handleAddService}
-              className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 col-span-1"
+              className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
             >
               Add Service
             </button>
           </div>
 
-          {/* List Services */}
+          {/* Service List */}
           <div className="space-y-4">
             {platform.categories[selectedCategory]?.map((svc, index) => (
               <div
                 key={index}
-                className="border p-4 rounded bg-white shadow flex justify-between items-center"
+                className="border p-4 rounded bg-white shadow flex flex-col md:flex-row md:justify-between md:items-center gap-4"
               >
                 {editingService?.index === index ? (
-                  <div className="flex-1 grid grid-cols-6 gap-2">
+                  <div className="flex-1 grid grid-cols-1 md:grid-cols-6 gap-2">
                     <input
                       value={serviceEdit.service}
-                      onChange={(e) => setServiceEdit({ ...serviceEdit, service: e.target.value })}
+                      onChange={(e) =>
+                        setServiceEdit({ ...serviceEdit, service: e.target.value })
+                      }
                       className="border p-1 rounded"
                     />
                     <input
                       value={serviceEdit.rate}
-                      onChange={(e) => setServiceEdit({ ...serviceEdit, rate: e.target.value })}
+                      onChange={(e) =>
+                        setServiceEdit({ ...serviceEdit, rate: e.target.value })
+                      }
                       className="border p-1 rounded"
                     />
                     <input
                       value={serviceEdit.min}
-                      onChange={(e) => setServiceEdit({ ...serviceEdit, min: e.target.value })}
+                      onChange={(e) =>
+                        setServiceEdit({ ...serviceEdit, min: e.target.value })
+                      }
                       className="border p-1 rounded"
                     />
                     <input
                       value={serviceEdit.max}
-                      onChange={(e) => setServiceEdit({ ...serviceEdit, max: e.target.value })}
+                      onChange={(e) =>
+                        setServiceEdit({ ...serviceEdit, max: e.target.value })
+                      }
                       className="border p-1 rounded"
                     />
                     <input
                       value={serviceEdit.desc}
-                      onChange={(e) => setServiceEdit({ ...serviceEdit, desc: e.target.value })}
-                      className="border p-1 rounded col-span-2"
+                      onChange={(e) =>
+                        setServiceEdit({ ...serviceEdit, desc: e.target.value })
+                      }
+                      className="border p-1 rounded md:col-span-2"
                     />
-                    <div className="flex gap-2 col-span-6 mt-2">
+                    <div className="flex gap-2 col-span-1 md:col-span-6 mt-2">
                       <button
-                        onClick={() => handleUpdateService(selectedCategory, index, serviceEdit)}
+                        onClick={() =>
+                          handleUpdateService(selectedCategory, index, serviceEdit)
+                        }
                         className="px-3 py-1 bg-green-600 text-white rounded"
                       >
                         Save
@@ -346,7 +367,7 @@ const PlatformDetail = () => {
                   </div>
                 ) : (
                   <>
-                    <div>
+                    <div className="flex-1">
                       <h4 className="font-bold">{svc.service}</h4>
                       <p className="text-sm text-gray-600">{svc.desc}</p>
                       <p className="text-xs text-gray-500">
