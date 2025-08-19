@@ -299,3 +299,5 @@ export const deleteServiceFromCategory = async (platformId, categoryName, index)
     return { success: false, message: "Server error." };
   }
 };
+
+
