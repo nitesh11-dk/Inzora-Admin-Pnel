@@ -15,7 +15,10 @@ const Services = () => {
   const [platforms, setPlatforms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Single form for Add & Edit
   const [form, setForm] = useState({ name: "", image: "", description: "" });
+  const [editId, setEditId] = useState(null); // null means add mode
 
   useEffect(() => {
     async function fetchAllPlatforms() {
@@ -44,34 +47,46 @@ const Services = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleAddPlatform = async () => {
+  const handleAddOrUpdate = async () => {
+    if (!form.name || !form.image) return setError("Name and Image are required");
+
     try {
       setLoading(true);
-      const res = await createPlatform(form);
-      if (res.success) {
-        setPlatforms([...platforms, res.data]);
-        setForm({ name: "", image: "", description: "" });
+      if (editId) {
+        // Update mode
+        const res = await updatePlatform(editId, form);
+        if (res.success) {
+          setPlatforms(platforms.map((p) => (p._id === editId ? res.data : p)));
+          setForm({ name: "", image: "", description: "" });
+          setEditId(null);
+        } else {
+          setError(res.message);
+        }
       } else {
-        setError(res.message);
+        // Add mode
+        const res = await createPlatform(form);
+        if (res.success) {
+          setPlatforms([...platforms, res.data]);
+          setForm({ name: "", image: "", description: "" });
+        } else {
+          setError(res.message);
+        }
       }
     } catch (err) {
-      setError("Failed to add platform");
+      setError("Failed to save platform");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleUpdatePlatform = async (id, updatedData) => {
-    try {
-      const res = await updatePlatform(id, updatedData);
-      if (res.success) {
-        setPlatforms(platforms.map((p) => (p._id === id ? res.data : p)));
-      } else {
-        setError(res.message);
-      }
-    } catch (err) {
-      setError("Failed to update platform");
-    }
+  const handleEditClick = (platform) => {
+    setEditId(platform._id);
+    setForm({
+      name: platform.name,
+      image: platform.image,
+      description: platform.description,
+    });
+    window.scrollTo({ top: 0, behavior: "smooth" }); // optional: scroll to form
   };
 
   const handleDeletePlatform = async (id) => {
@@ -105,10 +120,10 @@ const Services = () => {
         </p>
       </div>
 
-      {/* Add Platform Form */}
+      {/* Add / Edit Platform Form */}
       <div className="mb-6 sm:mb-8 border border-gray-200 rounded-xl p-4 sm:p-6 bg-white shadow">
         <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">
-          Add New Platform
+          {editId ? "Edit Platform" : "Add New Platform"}
         </h2>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
           <input
@@ -136,12 +151,25 @@ const Services = () => {
             className="border p-2 rounded-lg w-full text-sm sm:text-base focus:ring-2 focus:ring-gray-400 focus:outline-none"
           />
         </div>
-        <button
-          onClick={handleAddPlatform}
-          className="mt-4 px-4 py-2 w-full sm:w-auto bg-gray-900 text-white rounded-lg hover:bg-gray-700 transition"
-        >
-          Add Platform
-        </button>
+        <div className="mt-4 flex gap-2">
+          <button
+            onClick={handleAddOrUpdate}
+            className="px-4 py-2 w-full sm:w-auto bg-gray-900 text-white rounded-lg hover:bg-gray-700 transition"
+          >
+            {editId ? "Update Platform" : "Add Platform"}
+          </button>
+          {editId && (
+            <button
+              onClick={() => {
+                setForm({ name: "", image: "", description: "" });
+                setEditId(null);
+              }}
+              className="px-4 py-2 w-full sm:w-auto bg-gray-500 text-white rounded-lg hover:bg-gray-400 transition"
+            >
+              Cancel
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Platforms Grid */}
@@ -169,19 +197,14 @@ const Services = () => {
                 onClick={(e) => e.stopPropagation()}
               >
                 <button
-                  onClick={() =>
-                    handleUpdatePlatform(platform._id, {
-                      ...platform,
-                      name: platform.name + " (Updated)",
-                    })
-                  }
+                  onClick={() => handleEditClick(platform)}
                   className="w-full sm:w-auto px-3 py-1.5 text-sm bg-gray-800 text-white rounded-lg hover:bg-gray-700"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDeletePlatform(platform._id)}
-                  className="w-full sm:w-auto px-3 py-1.5 text-sm bg-gray-600 text-white rounded-lg hover:bg-gray-500"
+                  className="w-full sm:w-auto px-3 py-1.5 text-sm bg-red-600 text-white rounded-lg hover:bg-red-500"
                 >
                   Delete
                 </button>
