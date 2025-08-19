@@ -1,10 +1,10 @@
 "use server"
 
-import User from "@/lib/models/User";
 import connect from "@/lib/mongo";
 import PlatformService from "@/lib/models/Service";
 import axios from "axios";
-
+import Order from "@/lib/models/Order";
+import Payment from "@/lib/models/Payment";
 
 
 const providerApiUrl = process.env.PROVIDER_API_URL;
@@ -301,3 +301,122 @@ export const deleteServiceFromCategory = async (platformId, categoryName, index)
 };
 
 
+
+
+
+/**
+ * Fetch all orders, calculate total earnings and actual earnings.
+ */
+
+/**
+ * Fetch all orders, calculate total earnings and actual earnings (up to 4 decimal places).
+ */
+export const getDashboardEarnings = async () => {
+  try {
+
+    connect()
+    // 1️⃣ Fetch all orders
+    const orders = await Order.find({});
+
+    if (!orders || orders.length === 0) {
+      return {
+        totalEarnings: 0,
+        totalApiCharges: 0,
+        actualEarnings: 0,
+      };
+    }
+
+    // 2️⃣ Calculate total DB earnings (sum of price only)
+    let totalEarnings = orders.reduce((acc, order) => {
+      const price = parseFloat(order.price) || 0;
+      return acc + price;
+    }, 0);
+
+    // 3️⃣ Prepare order IDs for API request (max 100 per request)
+    const orderIds = orders
+      .filter((o) => o.actualOrderIdFromApi)
+      .map((o) => o.actualOrderIdFromApi);
+
+    let totalApiCharges = 0;
+
+    // Split into chunks of 100 orders
+    const chunkSize = 100;
+    for (let i = 0; i < orderIds.length; i += chunkSize) {
+      const chunk = orderIds.slice(i, i + chunkSize).join(",");
+
+      // 4️⃣ Call external API
+      const response = await axios.post(
+        providerApiUrl,
+        new URLSearchParams({
+          key: providerApiKey,
+          action: "status",
+          orders: chunk,
+        }),
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        }
+      );
+
+      const data = response.data;
+
+      // 5️⃣ Sum up charges from API
+      Object.values(data).forEach((order) => {
+        if (order.charge) {
+          totalApiCharges += parseFloat(order.charge);
+        }
+      });
+    }
+
+    // 6️⃣ Calculate actual earnings
+    const actualEarnings = totalEarnings - totalApiCharges;
+
+    // Round all numbers to 4 decimal places
+    return {
+      totalEarnings: Number(totalEarnings.toFixed(4)),
+      totalApiCharges: Number(totalApiCharges.toFixed(4)),
+      actualEarnings: Number(actualEarnings.toFixed(4)),
+    };
+  } catch (err) {
+    console.error("Error fetching dashboard earnings:", err);
+    throw new Error("Failed to fetch dashboard earnings");
+  }
+};
+
+
+/**
+ * Fetch all payment history and calculate total and actual earnings after Razorpay fee
+ */
+export const getPaymentEarnings = async () => {
+  try {
+    connect();
+    // 1️⃣ Fetch all paid payments
+    const payments = await Payment.find({ status: 'paid' });
+
+    if (!payments || payments.length === 0) {
+      return {
+        totalCollected: 0,
+        actualEarnings: 0,
+      };
+    }
+
+    // 2️⃣ Calculate total collected
+    const totalCollected = payments.reduce((acc, payment) => {
+      const amount = parseFloat(payment.amount) || 0;
+      return acc + amount;
+    }, 0);
+
+    // 3️⃣ Calculate actual earnings after 2% Razorpay fee
+    const feePercentage = 0.02; // 2%
+    const actualEarnings = totalCollected * (1 - feePercentage);
+
+    return {
+      totalCollected: parseFloat(totalCollected.toFixed(4)),
+      actualEarnings: parseFloat(actualEarnings.toFixed(4)),
+    };
+  } catch (err) {
+    console.error("Error fetching payment earnings:", err);
+    throw new Error("Failed to fetch payment earnings");
+  }
+};
